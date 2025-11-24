@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useTRPC } from '@/integrations/trpc/react'
+import { X } from 'lucide-react'
 
 export const Route = createFileRoute('/demo/trpc-todo')({
   component: TRPCTodos,
@@ -25,6 +26,13 @@ function TRPCTodos() {
     },
   })
 
+  const { mutate: removeTodo } = useMutation({
+    ...trpc.todos.remove.mutationOptions(),
+    onSuccess: () => {
+      refetch()
+    },
+  })
+
   const submitTodo = useCallback(() => {
     addTodo({ name: todo })
   }, [addTodo, todo])
@@ -43,9 +51,15 @@ function TRPCTodos() {
           {data?.map((t) => (
             <li
               key={t.id}
-              className="bg-white/10 border border-white/20 rounded-lg p-3 backdrop-blur-sm shadow-md"
+              className="bg-white/10 border border-white/20 rounded-lg p-3 backdrop-blur-sm shadow-md relative"
             >
               <span className="text-lg text-white">{t.title}</span>
+              <button
+                onClick={() => removeTodo({ id: t.id })}
+                className="ml-2 text-red-500 hover:text-red-600 absolute top-2 right-2"
+              >
+                <X />
+              </button>
             </li>
           ))}
         </ul>

@@ -2,7 +2,7 @@ import { db } from '@/db'
 import { todos } from '@/db/schema'
 import { createTRPCRouter, publicProcedure } from '@/integrations/trpc/init'
 import { z } from 'zod'
-import { desc } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 
 export const todosRouter = createTRPCRouter({
   add: publicProcedure
@@ -14,6 +14,11 @@ export const todosRouter = createTRPCRouter({
         .returning()
 
       return newTodo
+    }),
+  remove: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      await db.delete(todos).where(eq(todos.id, input.id))
     }),
   list: publicProcedure.query(async () => {
     const data = await db.select().from(todos).orderBy(desc(todos.createdAt))
