@@ -2,6 +2,7 @@ import { RPCHandler } from '@orpc/server/fetch'
 import { createFileRoute } from '@tanstack/react-router'
 import { onError } from '@orpc/server'
 import router from '@/integrations/orpc/router'
+import { createRPCContext } from '@/integrations/orpc/init'
 
 const handler = new RPCHandler(router, {
   interceptors: [
@@ -17,7 +18,7 @@ export const Route = createFileRoute('/api/rpc/$')({
       ANY: async ({ request }) => {
         const { response } = await handler.handle(request, {
           prefix: '/api/rpc',
-          context: {}, // Provide initial context if needed
+          context: await createRPCContext({ headers: request.headers }),
         })
 
         return response ?? new Response('Not Found', { status: 404 })
