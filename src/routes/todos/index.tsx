@@ -1,8 +1,21 @@
 import { orpc } from '@/integrations/orpc/client'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import * as z from 'zod'
+import { useForm } from '@tanstack/react-form'
+import { Button } from '@/components/ui/button'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+})
 
 export const Route = createFileRoute('/todos/')({
   component: Todos,
@@ -16,7 +29,18 @@ export const Route = createFileRoute('/todos/')({
 })
 
 function Todos() {
-  const [todo, setTodo] = useState('')
+  const form = useForm({
+    defaultValues: {
+      name: '',
+    },
+    validators: {
+      onSubmit: formSchema,
+    },
+    onSubmit: async ({ value }) => {
+      await mutation.mutateAsync(value)
+    },
+  })
+
   const queryClient = useQueryClient()
 
   const { data } = useQuery(
@@ -33,6 +57,7 @@ function Todos() {
             input: {},
           }),
         )
+        form.reset()
         toast('Todo added successfully')
       },
       onError: (error) => {
@@ -40,12 +65,6 @@ function Todos() {
       },
     }),
   )
-
-  const submitTodo = useCallback(() => {
-    mutation.mutate({
-      name: todo,
-    })
-  }, [mutation])
 
   return (
     <div
@@ -67,27 +86,49 @@ function Todos() {
             </li>
           ))}
         </ul>
-        <div className="flex flex-col gap-2">
-          <input
-            type="text"
-            value={todo}
-            onChange={(e) => setTodo(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                submitTodo()
-              }
-            }}
-            placeholder="Enter a new todo..."
-            className="w-full px-4 py-3 rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          />
-          <button
-            disabled={todo.trim().length === 0}
-            onClick={submitTodo}
-            className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
-          >
-            Add todo
-          </button>
-        </div>
+        {/* Add todo form  */}
+        <form
+          id="todo-form"
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
+          <FieldGroup>
+            <form.Field
+              name="name"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="todo name"
+                      autoComplete="off"
+                      type="text"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+
+            <Field>
+              <Button type="submit" form="todo-form">
+                Add todo
+              </Button>
+            </Field>
+          </FieldGroup>
+        </form>
       </div>
     </div>
   )

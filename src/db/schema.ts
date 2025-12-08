@@ -1,5 +1,12 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core'
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  index,
+  uuid,
+} from 'drizzle-orm/pg-core'
 
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
@@ -91,3 +98,10 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }))
+
+// Todos
+export const todos = pgTable('todos', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  completed: boolean('completed').notNull().default(false),
+})

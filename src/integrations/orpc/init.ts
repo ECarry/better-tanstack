@@ -3,7 +3,7 @@ import { ORPCError, os } from '@orpc/server'
 
 export async function createRPCContext(opts: { headers: Headers }) {
   const session = await auth.api.getSession({ headers: opts.headers })
-  console.log('session session', session)
+
   return {
     headers: opts.headers,
     session,
