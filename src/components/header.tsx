@@ -17,23 +17,27 @@ const Header = () => {
   }
 
   return (
-    <header className="flex justify-between items-center p-4">
-      <Link to="/">Better TanStack.s</Link>
+    <header className="fixed w-full top-0 z-50">
+      <div className="flex justify-between items-center p-4">
+        <Link to="/" className="text-xl font-bold text-rose-400">
+          Better TanStack.s
+        </Link>
 
-      <nav className="flex items-center gap-4">
-        {session ? (
-          <Button onClick={handleSignOut}>Sign out</Button>
-        ) : (
-          <>
-            <Button asChild>
-              <Link to="/login">Login in</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/signup">Sign up</Link>
-            </Button>
-          </>
-        )}
-      </nav>
+        <nav className="flex items-center gap-4">
+          {session ? (
+            <Button onClick={handleSignOut}>Sign out</Button>
+          ) : (
+            <>
+              <Button asChild>
+                <Link to="/login">Login in</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/signup">Sign up</Link>
+              </Button>
+            </>
+          )}
+        </nav>
+      </div>
     </header>
   )
 }
