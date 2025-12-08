@@ -17,7 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 
 type Todo = { id: string; name: string; completed: boolean }
 
-const formSchema = z.object({
+export const TodoSchema = z.object({
   name: z.string().min(1, 'Name is required'),
 })
 
@@ -41,7 +41,7 @@ function Todos() {
       name: '',
     },
     validators: {
-      onSubmit: formSchema,
+      onSubmit: TodoSchema,
     },
     onSubmit: async ({ value }) => {
       await createMutation.mutateAsync(value)
