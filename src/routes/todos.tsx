@@ -21,7 +21,7 @@ export const TodoSchema = z.object({
   name: z.string().min(1, 'Name is required'),
 })
 
-export const Route = createFileRoute('/todos/')({
+export const Route = createFileRoute('/todos')({
   component: Todos,
   loader: async ({ context }) => {
     await context.queryClient.prefetchQuery(

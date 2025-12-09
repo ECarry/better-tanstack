@@ -13,6 +13,7 @@ import * as z from 'zod'
 import { useForm } from '@tanstack/react-form'
 import { toast } from 'sonner'
 import { signIn } from '@/modules/auth/lib/auth-client'
+import { Link } from '@tanstack/react-router'
 
 const formSchema = z.object({
   email: z.email('Invalid email'),
@@ -144,9 +145,9 @@ export function LoginForm({
           </Button>
           <FieldDescription className="text-center">
             Don&apos;t have an account?{' '}
-            <a href="/signup" className="underline underline-offset-4">
+            <Link to="/auth/signup" className="underline underline-offset-4">
               Sign up
-            </a>
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

@@ -10,7 +10,7 @@ const Header = () => {
     await signOut({
       fetchOptions: {
         onSuccess: () => {
-          navigate({ to: '/login' })
+          navigate({ to: '/auth/login' })
         },
       },
     })
@@ -29,10 +29,10 @@ const Header = () => {
           ) : (
             <>
               <Button asChild>
-                <Link to="/login">Login in</Link>
+                <Link to="/auth/login">Login in</Link>
               </Button>
               <Button asChild>
-                <Link to="/signup">Sign up</Link>
+                <Link to="/auth/signup">Sign up</Link>
               </Button>
             </>
           )}

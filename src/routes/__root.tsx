@@ -8,8 +8,6 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import { Toaster } from '@/components/ui/sonner'
 
-import Header from '../components/header'
-
 import appCss from '../styles.css?url'
 
 // tanstack query
@@ -60,7 +58,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <Header />
         {children}
         <Toaster />
         <TanStackDevtools
